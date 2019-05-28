@@ -34,6 +34,7 @@ namespace Lab2 {
             } else {
                 Console.WriteLine($"возраст человека : {(ty - yy) - 1}");
             }
+
             // а если тернарный оператор?
             result = tm >= mm ? (ty - yy) : (ty - yy) - 1;
             Console.WriteLine($"возраст человека : {result}");
