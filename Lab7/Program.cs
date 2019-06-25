@@ -16,6 +16,13 @@ namespace Lab7 {
             Driver d3 = new Driver("Шкаликов", "Улица3", "342-672-892", DateTime.Parse("12.12.1991"));
             Driver d4 = new Driver("Личекака", "Улица4", "343-673-893", DateTime.Parse("01.01.1992"));
 
+            //Driver cd4 = (Driver)d4.Clone();
+            //cd4.Name = "123456789";
+            //Console.WriteLine(d4.Name);
+            //Console.WriteLine(cd4.Name);
+
+
+
             //(регистрационный номер, марка, модель, тип, цвет, водители(массив), состояние, цена)
             Car c1 = new Car("000001", "Audi", "QW001", "01", "Red", new Driver[] { d1 }, Condition.GoodCar, 400000);
             Car c2 = new Car("000001", "Dacia", "QW002", "02", "Yellow", new Driver[] { d1 }, Condition.BadCar, 100000);
