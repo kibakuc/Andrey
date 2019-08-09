@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.OracleClient;
+using System.Data;
+using System.Collections;
 
 namespace Oracle_test {
 
@@ -14,23 +16,46 @@ namespace Oracle_test {
     //https://codereview.stackexchange.com/questions/194954/calling-an-oracle-stored-procedure-with-c-code
     //https://www.c-sharpcorner.com/article/calling-oracle-stored-procedures-from-microsoft-net/
     //https://stackoverflow.com/questions/31168652/how-can-i-call-a-oracle-connection-method-in-c-sharp-with-paramaters
+    //https://csharp.hotexamples.com/ru/site/file?hash=0xac08661749b3b119fc40d702d2367caa9b0fe6bc7e6a8c1fc334cb916883dfe1&fullName=OrclDBManager.cs&project=hahaer222/EvaluationSys
+
+    class AddParametrs {
+        string name;
+        object val;
+        OracleType type;
+        ParameterDirection direction;
+
+
+
+        public AddParametrs(string name, object val, OracleType type, ParameterDirection direction) {
+            Name = name;
+            Val = val;
+            Type = type;
+            Direction = direction;
+        }
+
+        public string Name { get => name; set => name = value; }
+        public object Val { get => val; set => val = value; }
+        public OracleType Type { get => type; set => type = value; }
+        public ParameterDirection Direction { get => direction; set => direction = value; }
+    }
 
     class OracleClient {
         private string connectionstring;
-        private bool disposed = false;
+        //private bool disposed = false;
 
         [Obsolete]
         private static OracleConnection conn = null;
-        [Obsolete]
-        private OracleCommand cmd = null;
-        private OracleTransaction tran = null;
+
+        //[Obsolete]
+        //private OracleCommand cmd = null;
+        //private OracleTransaction tran = null;
 
 
         public OracleClient() {
         }
 
-        public OracleClient(string datasource, string user, string password) {
-            this.connectionstring = "Data Source=" + datasource + ";User Id=" + user + ";Password=" + password + ";";
+        public OracleClient(string alias, string user, string password) {
+            this.connectionstring = "Data Source=" + alias + ";User Id=" + user + ";Password=" + password + ";";
         }
 
         public OracleClient(string host, string port, string sid, string user, string password) {
@@ -58,14 +83,90 @@ namespace Oracle_test {
 
         [Obsolete]
         public void CloseConnection() {
-            conn.Close();
+            if (conn.State == System.Data.ConnectionState.Open) {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public void AddParameter(string name, object value, OracleType oracleType, OracleParameterCollection parameters) {
+            OracleParameter p = new OracleParameter(name, oracleType);
+            p.Direction = ParameterDirection.Input;
+            p.ParameterName = name;
+            p.OracleType = oracleType;
+            p.Value = value;
+            parameters.Add(p);
         }
 
         [Obsolete]
-        public OracleCommand CommandOracle(string SqlStr) {
-            cmd = new OracleCommand(SqlStr, conn);
-            return cmd;
+        public OracleDataReader OracleExecuteQuery(string SqlStr, ArrayList parameters = null) {
+            OracleCommand cmd = new OracleCommand(SqlStr, conn);
+            cmd.CommandText = SqlStr;
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.Clear();
+            if (parameters != null) {
+                OracleParameterCollection prm = cmd.Parameters;
+                foreach (var param in parameters) {
+                    //int q = parameters.IndexOf(param);
+                    OracleParameter p = new OracleParameter();
+                    p.Direction = ((AddParametrs)(param)).Direction;
+                    p.ParameterName = ((AddParametrs)(param)).Name;
+                    p.OracleType = ((AddParametrs)(param)).Type;
+                    p.Value = ((AddParametrs)(param)).Val;
+                    prm.Add(p);
+                }
+            }
+            cmd.Prepare();
+
+            OracleDataReader rdr = cmd.ExecuteReader();
+            if (rdr.HasRows)
+                return rdr;
+            return null;
         }
+
+        [Obsolete]
+        public object OracleExecuteNonQuery(OracleTransaction tran, string SqlStr, ArrayList parameters = null) {
+            //OracleTransaction tran = conn.BeginTransaction();
+            OracleCommand cmd = new OracleCommand(SqlStr, conn);
+            cmd.Transaction = tran;
+            try {
+                cmd.CommandText = SqlStr;
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Clear();
+                string prmName = null;
+                if (parameters != null) {
+                    OracleParameterCollection prm = cmd.Parameters;
+                    foreach (var param in parameters) {
+                        //int q = parameters.IndexOf(param);
+                        OracleParameter p = new OracleParameter();
+                        p.Direction = ((AddParametrs)(param)).Direction;
+                        p.ParameterName = ((AddParametrs)(param)).Name;
+                        if (p.Direction != ParameterDirection.Input) {
+                            prmName = ((AddParametrs)(param)).Name;
+                        }
+                        p.OracleType = ((AddParametrs)(param)).Type;
+                        p.Value = ((AddParametrs)(param)).Val;
+                        prm.Add(p);
+                    }
+
+                }
+
+                cmd.ExecuteNonQuery();
+                if (!string.IsNullOrEmpty(prmName))
+                    return cmd.Parameters[prmName].Value;
+                return null;
+                //tran.Commit();
+            } catch (Exception e) {
+                return -1;
+                //tran.Rollback();
+            } finally {
+                cmd.Parameters.Clear();
+                cmd.Dispose();
+                //tran.Dispose();
+            }
+
+        }
+
 
         /*
                 [Obsolete]

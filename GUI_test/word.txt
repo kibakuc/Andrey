@@ -1,0 +1,20 @@
+using Microsoft.Office.Interop.Word;
+private void readFileContent(string path)
+    {
+        Microsoft.Office.Interop.Word.ApplicationClass wordApp = new ApplicationClass();
+        object file = path;
+        object nullobj = System.Reflection.Missing.Value;
+        Microsoft.Office.Interop.Word.Document doc = wordApp.Documents.Open(
+            ref file, ref nullobj, ref nullobj,
+            ref nullobj, ref nullobj, ref nullobj,
+            ref nullobj, ref nullobj, ref nullobj,
+            ref nullobj, ref nullobj, ref nullobj);
+        doc.ActiveWindow.Selection.WholeStory();
+        doc.ActiveWindow.Selection.Copy();
+        IDataObject data = Clipboard.GetDataObject();
+       textbox1.Text = data.GetData(DataFormats.Text).ToString();
+        doc.Close(ref nullobj, ref nullobj, ref nullobj);
+        wordApp.Quit(ref nullobj, ref nullobj, ref nullobj);
+    }
+
+string txt=doc.Content.Text;

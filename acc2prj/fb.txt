@@ -1,0 +1,5 @@
+fb_con.Charset = "WIN1251"; //используемая кодировка 
+fb_con.UserID = "SYSDBA";
+fb_con.Password = "masterkey";
+fb_con.Database = @"C:\Users\User\Desktop\TESTS.FDB";
+fb_con.ServerType = 0; //указываем тип сервера (0 - "полноценный Firebird" (classic или super server), 1 - встроенный (embedded))
