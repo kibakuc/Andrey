@@ -49,7 +49,8 @@ namespace Lab13 {
                 foreach (var w in item.weather) {
                     Console.WriteLine($"{w.id} {w.main} {w.description} {w.icon}");
                 }
-                Console.WriteLine($"{item.clouds.all} {item.wind.speed} {item.wind.deg} {item.sys.pod}");
+                //Console.WriteLine($"{item.clouds.all} {item.wind.speed} {item.wind.deg} {item.sys.pod} {DateTime.ParseExact((item.dt_txt, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture).ToString()}");
+                Console.WriteLine($"{item.clouds.all} {item.wind.speed} {item.wind.deg} {item.sys.pod} {DateTime.ParseExact(item.dt_txt, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.GetCultureInfo("uk-UA")).ToString()}");
                 Console.WriteLine("-------------");
             }
 

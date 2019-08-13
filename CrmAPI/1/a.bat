@@ -1,0 +1,3 @@
+rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7.2 Tools\wsdl.exe" /verbose /namespace:GetCrmApiInfo /out:D:/download/crmApi.cs /protocol:SOAP /language:CS ./crmApi.wsdl
+rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7.2 Tools\wsdl.exe" /verbose /namespace:GetCrmApiInfo /protocol:SOAP /language:CS ./crmApi.wsdl
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7.2 Tools\wsdl.exe" /verbose /namespace:GetbackOfficeApiInfo /protocol:SOAP /language:CS ./backOfficeApi.wsdl

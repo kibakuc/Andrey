@@ -80,8 +80,13 @@ namespace acc2prj {
                                 where P.CLIENTODBID = @PARAM";
 
             string strSQL5 = @"select ap.iban
-                                from east_acc_pool ap
-                                where ap.accnum = @PARAM";
+                               from accounts ac
+                               join east_acc_pool ap on ap.contractid=ac.contractid
+                               where ac.accnum = @PARAM
+                               union all
+                               select ap.iban
+                               from east_acc_pool ap
+                               where ap.accnum = @PARAM";
 
             var result = openFileDialog1.ShowDialog();
             if (result != DialogResult.OK) {
@@ -118,7 +123,7 @@ namespace acc2prj {
                         if (StrNotNumber(excelDoc.GetCellValue(i, 1).ToString().Trim())) {
                             cmd.Parameters.Clear();
                             //cmd.Parameters.Add("@PARAM", FbDbType.Text).Value = excelDoc.GetCellValue(i, 1).ToString().Trim();
-                            cmd.Parameters.Add("@PARAM", FbDbType.Text).Value = excelDoc.GetCellValue(i, 4).ToString().Trim();
+                            cmd.Parameters.Add("@PARAM", FbDbType.Text).Value = excelDoc.GetCellValue(i, 7).ToString().Trim();
                             cmd.Prepare();
                             rdr = cmd.ExecuteReader();
                             if (rdr.Read()) {
@@ -127,10 +132,10 @@ namespace acc2prj {
                                     //MessageBox.Show(rdr["PROJECTID"].ToString() + " " + rdr["PROJECTNAME"].ToString());
 
                                     /*
-                                    excelDoc.SetCustomFormat("###0", i, 6);
-                                    excelDoc.SetCellValue(Convert.ToInt32(rdr["PROJECTID"].ToString()), i, 6);
-                                    excelDoc.SetCustomFormat("@", i, 7);
-                                    excelDoc.SetCellValue(rdr["PROJECTNAME"].ToString(), i, 7);
+                                                                        excelDoc.SetCustomFormat("###0", i, 6);
+                                                                        excelDoc.SetCellValue(Convert.ToInt32(rdr["PROJECTID"].ToString()), i, 6);
+                                                                        excelDoc.SetCustomFormat("@", i, 7);
+                                                                        excelDoc.SetCellValue(rdr["PROJECTNAME"].ToString(), i, 7);
                                     */
                                     //excelDoc.SetCustomFormat("@", i, 7);
                                     //excelDoc.SetCellValue(rdr["birthplace"].ToString(), i, 7);
@@ -209,8 +214,9 @@ namespace acc2prj {
                                     excelDoc.SetCellValue(rdr["CLPOSITION"].ToString(), i, 6);
                                     */
 
-                                    excelDoc.SetCustomFormat("@", i, 5);
-                                    excelDoc.SetCellValue(rdr["iban"].ToString(), i, 5);
+                                    excelDoc.SetCustomFormat("@", i, 8);
+                                    excelDoc.SetCellValue(rdr["iban"].ToString(), i, 8);
+
 
                                 }
                             }
