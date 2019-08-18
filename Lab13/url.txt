@@ -1,5 +1,0 @@
-Удобный инструмент форматирования JSON
-https://jsonformatter.curiousconcept.com/
-
-Удобный инструмент для создания типов C# из JSON
-https://app.quicktype.io/#l=cs&r=json2csharp
